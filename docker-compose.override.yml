@@ -1,0 +1,34 @@
+# Development override for docker-compose.yml
+# This file is automatically loaded by docker-compose
+# Use this for development-specific configurations
+
+version: '3.8'
+
+services:
+  lancedb:
+    # Enable development mode
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    environment:
+      - LANCEDB_LOG_LEVEL=DEBUG
+      - LANCEDB_AUTH_ENABLED=false
+    # Expose debug port
+    ports:
+      - "9000:9000"
+      - "5678:5678"  # debugpy port
+    # Override command for development
+    command: ["python", "-u", "src/main.py"]
+
+  # Disable nginx and monitoring in development
+  nginx:
+    profiles:
+      - production
+      
+  prometheus:
+    profiles:
+      - production
+      
+  grafana:
+    profiles:
+      - production 
